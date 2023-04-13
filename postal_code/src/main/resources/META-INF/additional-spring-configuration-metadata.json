@@ -1,0 +1,24 @@
+{
+  "properties": [
+    {
+      "name": "jp.sample.postal.ken.all",
+      "type": "java.lang.String",
+      "description": "全国一括ダウンロードzipURL"
+    },
+    {
+      "name": "jp.sample.postal.temp.add",
+      "type": "java.lang.String",
+      "description": "新規追加データ.zipURLのテンプレート"
+    },
+    {
+      "name": "jp.sample.postal.temp.del",
+      "type": "java.lang.String",
+      "description": "廃止データ.zipURLのテンプレート"
+    },
+    {
+      "name": "jp.sample.postal.base.url",
+      "type": "java.lang.String",
+      "description": "ダウンロードURLのベース部分"
+    }
+  ]
+}
