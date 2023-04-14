@@ -13,7 +13,7 @@
 ## 1.郵便番号7桁の前方一致検索
 
 ``` shell
-curl --location 'localhost:18080/postalcode/search/0010000'
+curl --location 'localhost:18080/postalcode/search/0010014'
 ```
 
 ### 郵便番号からの住所情報の取得response
