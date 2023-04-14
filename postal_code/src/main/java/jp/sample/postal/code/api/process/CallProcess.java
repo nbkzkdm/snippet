@@ -12,12 +12,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import jp.sample.postal.code.api.http.CityTownVillageDataModel;
+import jp.sample.postal.code.api.http.CityTownVillageModel;
+import jp.sample.postal.code.api.http.PrefectureDataModel;
 import jp.sample.postal.code.common.PostalCodeException;
-import jp.sample.postal.code.domain.model.CityTownVillageDataModel;
-import jp.sample.postal.code.domain.model.CityTownVillageModel;
 import jp.sample.postal.code.domain.model.PostalCodeCsv;
 import jp.sample.postal.code.domain.model.PostalCodeModel;
-import jp.sample.postal.code.domain.model.PrefectureDataModel;
 import jp.sample.postal.code.domain.service.PostalCodeDbService;
 import jp.sample.postal.code.domain.service.PostalCodeService;
 import lombok.extern.log4j.Log4j2;

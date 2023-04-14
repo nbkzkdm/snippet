@@ -1,7 +1,7 @@
 /**
  * 
  */
-package jp.sample.postal.code.domain.model;
+package jp.sample.postal.code.api.http;
 
 import java.util.List;
 

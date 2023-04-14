@@ -1,8 +1,9 @@
 /**
  * 
  */
-package jp.sample.postal.code.domain.model;
+package jp.sample.postal.code.api.http;
 
+import jp.sample.postal.code.domain.model.PostalCodeModel;
 import lombok.Data;
 
 /**

@@ -5,6 +5,8 @@ package jp.sample.postal.code.common.enums;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author nbkzk
@@ -101,6 +103,10 @@ public enum ZipcodeUrl {
             prefix = String.format("%02d", getValue());
         }
         return String.format("%s%s.zip", prefix, getName().replace("YYMM", yyMM)).toLowerCase();
+    }
+
+    public static List<String> getPrefectureList() {
+        return Arrays.stream(values()).filter(e -> !e.isNonFlag()).map(e -> e.getSummary()).toList();
     }
 
 }
