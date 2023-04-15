@@ -1,0 +1,43 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Postal Code Thymeleaf</title>
+        <script th:src="@{/js/common.js}"></script>
+    </head>
+    <body>
+        <h1>[[${message}]]</h1>
+        <div class="test" style="margin: 5em;">
+            <h2>郵便番号検索</h2>
+            <input type="text" id="postalCode" value="2206001" name="postalCode" required minlength="3" maxlength="7" />
+            <input type="submit" id="btnPostalCode" value="郵便番号検索" onclick="funcSearch()" /><br/>
+	        <div class="test1" style="padding: 3em;">
+	            <label for="address">住所</label><input type="text" id="address" name="address" style="width:600px;" /><br/>
+	            <hr/>
+	            <label for="p_address">都道府県：</label><input type="text" id="p_address" name="p_address" style="width:250px;" /><br/>
+	            <label for="c_address">市区町村：</label><input type="text" id="c_address" name="c_address" style="width:250px;" /><br/>
+	            <label for="s_address">町域名　：</label><input type="text" id="s_address" name="s_address" style="width:450px;" /><br/>
+	        </div>
+
+            <hr/>
+            <h2>都道府県検索</h2>
+            <select id="prefectureId" name="prefectureId">
+                <option th:each="item : ${prefectureList}"
+                        th:value="${item}"
+                        th:selected="${item == id}"
+                        th:inline="text">[[${item}]]</option>
+            </select>
+            <input type="submit" id="btnPrefecture" value="都道府県からの検索" onclick="funcPrefecture()" /><br/>
+            <div class="test2" style="padding: 3em;">
+                <label for="cityTownVillage">市区町村：<select id="cityTownVillage"></select></label>
+                <input type="submit" id="btnCityTownVillage" value="市区町村からの検索" onclick="funcCityTownVillage()" /><br/>
+                <label for="streetName">町域名　：<select id="streetName" onchange="onChnageHandler(this)"></select></label><br/>
+                <label for="zipCode">郵便番号：</label><input type="text" id="zipCode" name="zipCode" minlength="3" maxlength="7" /><br/>
+            </div>
+
+            <hr/>
+            <h2>データの取得</h2>
+            <input type="submit" id="btnUpdate" value="更新" onclick="funcUpdate()" /><br/>
+        </div>
+    </body>
+</html>
