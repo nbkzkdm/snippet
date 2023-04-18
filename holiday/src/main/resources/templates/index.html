@@ -1,0 +1,23 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>国民の休日 Thymeleaf</title>
+        <script th:src="@{/js/common.js}"></script>
+    </head>
+    <body>
+        <h1>[[${message}]]</h1>
+        <div class="test" style="margin: 5em;">
+            <h2>データの取得</h2>
+            <input type="submit" id="btnUpdate" value="更新" onclick="funcUpdate()" /><br/>
+            <hr/>
+            <input type="text" id="year" value="2023" name="year" required minlength="4" maxlength="4" />
+            <input type="submit" id="btnPostalCode" value="休日取得" onclick="funcSearch()" /><br/>
+            <div class="test2" style="padding: 3em;">
+                <label for="restList">選択年の休日：<select id="restList" onchange="onChnageHandler(this)" ></select></label>
+                <label for="holiday">休みの日付</label><input type="text" id="holiday" name="holiday" /><br/>
+            </div>
+        </div>
+        <a href="http://localhost:18090/h2-console" target="_blank">h2-console</a>
+    </body>
+</html>

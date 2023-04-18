@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "jp.sample.cabinet.office.shukujitsu",
+      "type": "java.lang.String",
+      "description": "内閣府の国民の休日のURL"
+    }
+  ]
+}
