@@ -5,7 +5,9 @@ package jp.sample.postal.code.domain.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -13,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.sample.postal.code.common.enums.InputType;
+import jp.sample.postal.code.domain.model.Merge;
+import jp.sample.postal.code.domain.model.MergeModel;
 import jp.sample.postal.code.domain.model.PostalCodeCsv;
 import jp.sample.postal.code.domain.model.PostalCodeModel;
 import jp.sample.postal.code.domain.repository.PostalCodeModelRepository;
@@ -47,6 +51,21 @@ public class PostalCodeDbService {
      */
     public List<PostalCodeModel> findAll() {
         return this.postalCodeModelRepository.findAll();
+    }
+
+    public List<PostalCodeModel> memrgeList(List<PostalCodeModel> entryList) {
+        List<Merge<PostalCodeModel>> targetList = entryList.stream().map(e -> new MergeModel().set(e)).toList();
+        Map<String, Merge<PostalCodeModel>> map = new HashMap<>();
+        for (Merge<PostalCodeModel> merge : targetList) {
+            Merge<PostalCodeModel> item = map.get(merge.key());
+            if (Objects.isNull(item)) {
+                map.put(merge.key(), merge);
+            }
+            else {
+                map.put(merge.key(), item.merge(merge.value()));
+            }
+        }
+        return map.values().stream().map(e -> e.value()).toList();
     }
 
     /**
