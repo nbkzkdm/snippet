@@ -112,7 +112,7 @@ class CallProcessTest {
             log.debug(String.format("id: %s[%s %s %s]",
                     item.getPostalCode(), item.getPrefectureName(), item.getCityTownVillage(), item.getStreetName()));
         }
-        assertEquals(93, list9.size());
+        assertEquals(92, list9.size());
     }
 
 }

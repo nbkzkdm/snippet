@@ -3,11 +3,13 @@
  */
 package jp.sample.postal.code.domain.model;
 
+import jp.sample.postal.code.common.Merge;
+
 /**
  * @author nbkzk
  *
  */
-public class MergeModel implements Merge<PostalCodeModel> {
+public class PostalCodeMergeModel implements Merge<PostalCodeModel> {
 
     private PostalCodeModel value;
 

@@ -39,20 +39,24 @@ public class PostalCodeModel {
     /** 1. 全国地方公共団体コード（JIS X0401、X0402）………　半角数字 */
     private String localGovernmentCode;
     /** 2. （旧）郵便番号（5桁）………………………………………　半角数字 */
+    @Column(length = 5)
     private String oldPostalCode;
     /** 3. 郵便番号（7桁）………………………………………　半角数字 */
+    @Column(length = 7)
     private String postalCode;
     /** 4. 都道府県名　…………　半角カタカナ（コード順に掲載）　（注1） */
     private String prefectureNameHwK;
     /** 5. 市区町村名　…………　半角カタカナ（コード順に掲載）　（注1） */
     private String cityTownVillageHwK;
     /** 6. 町域名　………………　半角カタカナ（五十音順に掲載）　（注1） */
+    @Column(length = 2048)
     private String streetNameHwK;
     /** 7. 都道府県名　…………　漢字（コード順に掲載）　（注1,2） */
     private String prefectureName;
     /** 8. 市区町村名　…………　漢字（コード順に掲載）　（注1,2） */
     private String cityTownVillage;
     /** 9. 町域名　………………　漢字（五十音順に掲載）　（注1,2） */
+    @Column(length = 2048)
     private String streetName;
     /** 10. 一町域が二以上の郵便番号で表される場合の表示　（注3）　（「1」は該当、「0」は該当せず） */
     @JsonIgnore
@@ -128,8 +132,8 @@ public class PostalCodeModel {
 
     public static PostalCodeModel convert(PostalCodeCsv item, InputType inputType) {
         PostalCodeModel value = new PostalCodeModel();
-        value.setLocalGovernmentCode(item.getLocalGovernmentCode());
-        value.setOldPostalCode(item.getOldPostalCode());
+        value.setLocalGovernmentCode(item.getLocalGovernmentCode().trim());
+        value.setOldPostalCode(item.getOldPostalCode().trim());
         value.setPostalCode(item.getPostalCode());
         value.setPrefectureNameHwK(item.getPrefectureNameHwK());
         value.setCityTownVillageHwK(item.getCityTownVillageHwK());

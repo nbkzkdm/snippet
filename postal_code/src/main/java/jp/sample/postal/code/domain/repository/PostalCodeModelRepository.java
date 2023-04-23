@@ -4,9 +4,11 @@
 package jp.sample.postal.code.domain.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import jp.sample.postal.code.domain.model.PostalCodeModel;
 
@@ -44,6 +46,21 @@ public interface PostalCodeModelRepository extends JpaRepository<PostalCodeModel
      * @return
      */
     public List<PostalCodeModel> findByPostalCode(String postalCode);
+    /**
+     * 一意
+     * @param postalCode
+     * @return
+     */
+    @Query(value = "select t.* "
+            + "from  postal_code_model as t "
+            + "where t.local_government_code = :localGovernmentCode "
+            + "and   t.old_postal_code = :oldPostalCode "
+            + "and   t.postal_code = :postalCode ",
+            nativeQuery = true)
+    public Optional<PostalCodeModel> findByUnique(
+            @Param("localGovernmentCode") String localGovernmentCode,
+            @Param("oldPostalCode") String oldPostalCode,
+            @Param("postalCode") String postalCode);
 
     /**
      * 最大作成日のデータを取得する

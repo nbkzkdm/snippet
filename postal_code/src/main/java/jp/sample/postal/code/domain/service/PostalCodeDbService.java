@@ -14,10 +14,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.sample.postal.code.common.Merge;
 import jp.sample.postal.code.common.enums.InputType;
-import jp.sample.postal.code.domain.model.Merge;
-import jp.sample.postal.code.domain.model.MergeModel;
 import jp.sample.postal.code.domain.model.PostalCodeCsv;
+import jp.sample.postal.code.domain.model.PostalCodeMergeModel;
 import jp.sample.postal.code.domain.model.PostalCodeModel;
 import jp.sample.postal.code.domain.repository.PostalCodeModelRepository;
 import lombok.extern.log4j.Log4j2;
@@ -53,8 +53,14 @@ public class PostalCodeDbService {
         return this.postalCodeModelRepository.findAll();
     }
 
-    public List<PostalCodeModel> memrgeList(List<PostalCodeModel> entryList) {
-        List<Merge<PostalCodeModel>> targetList = entryList.stream().map(e -> new MergeModel().set(e)).toList();
+    /**
+     * データのマージ処理
+     * 10秒程度かかります。
+     * @param entryList
+     * @return
+     */
+    public List<PostalCodeModel> mergeList(List<PostalCodeModel> entryList) {
+        List<Merge<PostalCodeModel>> targetList = entryList.stream().map(e -> new PostalCodeMergeModel().set(e)).toList();
         Map<String, Merge<PostalCodeModel>> map = new HashMap<>();
         for (Merge<PostalCodeModel> merge : targetList) {
             Merge<PostalCodeModel> item = map.get(merge.key());
@@ -74,7 +80,7 @@ public class PostalCodeDbService {
      * @return
      */
     public List<PostalCodeModel> createList(List<PostalCodeModel> entryList) {
-        return this.postalCodeModelRepository.saveAll(entryList);
+        return this.postalCodeModelRepository.saveAll(mergeList(entryList));
     }
 
     /**
@@ -93,35 +99,36 @@ public class PostalCodeDbService {
      * @return
      */
     public List<PostalCodeModel> postalCodeConvertAddList(List<PostalCodeCsv> csvList) {
+        List<PostalCodeModel> targetList = mergeList(csvList.stream().map(e -> PostalCodeModel.convert(e)).toList());
         List<PostalCodeModel> list = new ArrayList<>();
-        for (PostalCodeCsv csv : csvList) {
-            String postalCode = csv.getPostalCode();
-            List<PostalCodeModel> updateList =
-                    this.postalCodeModelRepository.findByPostalCode(postalCode);
+        for (PostalCodeModel target : targetList) {
+            String postalCode = target.getPostalCode();
+            Optional<PostalCodeModel> optionalTarget = this.postalCodeModelRepository.findByUnique(
+                    target.getLocalGovernmentCode(), target.getOldPostalCode(), postalCode);
             log.debug(String.format("追加:%s_%s_%s",
-                    csv.getPrefectureName(), csv.getCityTownVillage(), csv.getStreetName()));
-            int update = updateList.size();
-            log.debug(String.format("matching: %s[%d]", postalCode, update));
-            for (PostalCodeModel item : updateList) {
-                log.debug(String.format("add: %s[postal code: %s]", item.getPostalId(), item.getPostalCode()));
-                item.setPrefectureNameHwK(csv.getPrefectureNameHwK());
-                item.setCityTownVillageHwK(csv.getCityTownVillageHwK());
-                item.setStreetNameHwK(csv.getStreetNameHwK());
-                item.setPrefectureName(csv.getPrefectureName());
-                item.setCityTownVillage(csv.getCityTownVillage());
-                item.setStreetName(csv.getStreetName());
-                item.setCombinedZipCodeType(csv.getCombinedZipCodeType());
-                item.setDetailedStreetAddressingType(csv.getDetailedStreetAddressingType());
-                item.setAvenueAndStreetNumberingType(csv.getAvenueAndStreetNumberingType());
-                item.setMultiAreaZipCodeType(csv.getMultiAreaZipCodeType());
-                item.setUpdateIndicationType(csv.getUpdateIndicationType());
+                    target.getPrefectureName(), target.getCityTownVillage(), target.getStreetName()));
+            PostalCodeModel item = optionalTarget.orElse(new PostalCodeModel());
+            long update = item.getPostalId();
+            if (0 < update) {
+                log.debug(String.format("add: %s[postal code: %s]", update, item.getPostalCode()));
+                item.setPrefectureNameHwK(target.getPrefectureNameHwK());
+                item.setCityTownVillageHwK(target.getCityTownVillageHwK());
+                item.setStreetNameHwK(target.getStreetNameHwK());
+                item.setPrefectureName(target.getPrefectureName());
+                item.setCityTownVillage(target.getCityTownVillage());
+                item.setStreetName(target.getStreetName());
+                item.setCombinedZipCodeType(target.getCombinedZipCodeType());
+                item.setDetailedStreetAddressingType(target.getDetailedStreetAddressingType());
+                item.setAvenueAndStreetNumberingType(target.getAvenueAndStreetNumberingType());
+                item.setMultiAreaZipCodeType(target.getMultiAreaZipCodeType());
+                item.setUpdateIndicationType(target.getUpdateIndicationType());
                 item.setInputType(InputType.追加.getSummary());
                 item.setUpdateAt(LocalDateTime.now());
                 list.add(this.postalCodeModelRepository.save(item));
             }
-            if (0 == update) {
-                log.debug(String.format("add: %s[postal code: %s]", 0, csv.getPostalCode()));
-                list.add(this.postalCodeModelRepository.save(PostalCodeModel.convertAdd(csv)));
+            else {
+                log.debug(String.format("add: %s[postal code: %s]", 0, postalCode));
+                list.add(this.postalCodeModelRepository.save(target));
             }
         }
         return list;
