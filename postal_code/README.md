@@ -132,3 +132,9 @@ curl --location --request POST 'localhost:18080/postalcode/update'
 3. 文字コードをutf8に
 4. csvを読み込み
 5. DBへ登録
+
+## surefire-report
+
+``` shell
+mvnw package surefire-report:report
+```
