@@ -10,7 +10,7 @@
     </parent>
     <groupId>jp.sample.postal.code</groupId>
     <artifactId>postal_code</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>postal_code</name>
     <description>postal code project for Spring Boot</description>
     <properties>

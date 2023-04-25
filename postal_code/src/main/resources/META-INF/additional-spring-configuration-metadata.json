@@ -1,24 +1,19 @@
 {
   "properties": [
     {
-      "name": "jp.sample.postal.ken.all",
-      "type": "java.lang.String",
-      "description": "全国一括ダウンロードzipURL"
-    },
-    {
-      "name": "jp.sample.postal.temp.add",
-      "type": "java.lang.String",
-      "description": "新規追加データ.zipURLのテンプレート"
-    },
-    {
-      "name": "jp.sample.postal.temp.del",
-      "type": "java.lang.String",
-      "description": "廃止データ.zipURLのテンプレート"
-    },
-    {
       "name": "jp.sample.postal.base.url",
       "type": "java.lang.String",
       "description": "ダウンロードURLのベース部分"
+    },
+    {
+      "name": "jp.sample.postal.base.office.url",
+      "type": "java.lang.String",
+      "description": "事業所の個別郵便番号:ダウンロードURLのベース部分「{target}」を置換"
+    },
+    {
+      "name": "jp.sample.postal.base.roman.url",
+      "type": "java.lang.String",
+      "description": "郵便番号データ（ローマ字）:ダウンロードURLのベース部分「{target}」を置換"
     }
   ]
 }

@@ -81,7 +81,7 @@ class CallProcessTest2 {
         assertEquals(count, test1.getStreetNameList().size());
 
         try {
-            List<PostalCodeCsv> csvList = postalCodeService.getPostalCodeList(ZipcodeUrl.KANAGA.zipFileName());
+            List<PostalCodeCsv> csvList = postalCodeService.getPostalCodeList(ZipcodeUrl.KANAGAWA.zipFileName());
             List<PostalCodeModel> list = csvList.stream().map(e -> PostalCodeModel.convert(e)).toList();
             postalCodeDbService.createList(list);
             count = list.size();

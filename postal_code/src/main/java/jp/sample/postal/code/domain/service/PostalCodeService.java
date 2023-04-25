@@ -32,6 +32,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import jp.sample.postal.code.common.PostalCodeException;
 import jp.sample.postal.code.common.enums.ErrorType;
 import jp.sample.postal.code.common.enums.ExtensionType;
+import jp.sample.postal.code.common.enums.ZipcodeUrl;
 import jp.sample.postal.code.domain.model.PostalCodeCsv;
 import lombok.extern.log4j.Log4j2;
 
@@ -43,23 +44,17 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class PostalCodeService {
 
-    /** 全国一括ダウンロードzipURL */
-    @Value("${jp.sample.postal.ken.all}")
-    private String kenAll;
-    /** 新規追加データ.zipURLのテンプレート */
-    @Value("${jp.sample.postal.temp.add}")
-    private String tempAdd;
-    /** 廃止データ.zipURLのテンプレート */
-    @Value("${jp.sample.postal.temp.del}")
-    private String tempDel;
     /** ダウンロードURLのベース部分「{target}」を置換 */
     @Value("${jp.sample.postal.base.url}")
     private String baseUrl;
+    /** 事業所の個別郵便番号:ダウンロードURLのベース部分「{target}」を置換 */
+    @Value("${jp.sample.postal.base.office.url}")
+    private String baseOfficeUrl;
+    /** 郵便番号データ（ローマ字）:ダウンロードURLのベース部分「{target}」を置換 */
+    @Value("${jp.sample.postal.base.roman.url}")
+    private String baseRomanUrl;
 
     private RestTemplate restTemplate = new RestTemplate();
-
-    /** 日付フォーマット：yyMM */
-    private final DateTimeFormatter yyMM = DateTimeFormatter.ofPattern("yyMM");
 
     /**
      * 全国一括データ取得
@@ -67,7 +62,7 @@ public class PostalCodeService {
      * @throws PostalCodeException
      */
     public List<PostalCodeCsv> getPostalCodeAllList() throws PostalCodeException {
-        return getPostalCode(kenAll);
+        return getPostalCodeList(ZipcodeUrl.KEN_ALL.zipFileName());
     }
 
     /**
@@ -76,8 +71,7 @@ public class PostalCodeService {
      * @throws PostalCodeException
      */
     public List<PostalCodeCsv> getPostalCodeAddList() throws PostalCodeException {
-        LocalDate now = LocalDate.now().minusMonths(1);
-        return getPostalCode(tempAdd.replace("{YYMM}", now.format(yyMM)));
+        return getPostalCodeList(ZipcodeUrl.ADD_YYMM.zipFileName());
     }
 
     /**
@@ -86,8 +80,7 @@ public class PostalCodeService {
      * @throws PostalCodeException
      */
     public List<PostalCodeCsv> getPostalCodeDelList() throws PostalCodeException {
-        LocalDate now = LocalDate.now().minusMonths(1);
-        return getPostalCode(tempDel.replace("{YYMM}", now.format(yyMM)));
+        return getPostalCodeList(ZipcodeUrl.DEL_YYMM.zipFileName());
     }
 
     /**
@@ -97,6 +90,65 @@ public class PostalCodeService {
      */
     public List<PostalCodeCsv> getPostalCodeList(String fileName) throws PostalCodeException {
         return getPostalCode(baseUrl.replace("{target}", fileName));
+    }
+
+    /**
+     * 事業所すべてのURLのダウンロード
+     * https://www.post.japanpost.jp/zipcode/dl/jigyosyo/zip/jigyosyo.zip
+     * @return
+     * @throws PostalCodeException
+     */
+    public List<PostalCodeCsv> getPostalCodeOfficeList() throws PostalCodeException {
+        return getPostalCode("jigyosyo.zip");
+    }
+
+    /**
+     * 事業所追加のURLのダウンロード
+     * https://www.post.japanpost.jp/zipcode/dl/jigyosyo/zip/jadd2303.zip
+     * @return
+     * @throws PostalCodeException
+     */
+    public List<PostalCodeCsv> getPostalCodeOfficeAddList() throws PostalCodeException {
+        LocalDate now = LocalDate.now().minusMonths(1);
+        DateTimeFormatter yyMM = DateTimeFormatter.ofPattern("yyMM");
+        return getOfficeCodeList(String.format("jadd%s.zip", now.format(yyMM)));
+    }
+
+    /**
+     * 事業所削除のURLのダウンロード
+     * https://www.post.japanpost.jp/zipcode/dl/jigyosyo/zip/jdel2303.zip
+     * @return
+     * @throws PostalCodeException
+     */
+    public List<PostalCodeCsv> getPostalCodeOfficeDelList() throws PostalCodeException {
+        LocalDate now = LocalDate.now().minusMonths(1);
+        DateTimeFormatter yyMM = DateTimeFormatter.ofPattern("yyMM");
+        return getOfficeCodeList(String.format("jdel%s.zip", now.format(yyMM)));
+    }
+
+    /**
+     * 事業所のURLのダウンロード
+     * https://www.post.japanpost.jp/zipcode/dl
+     * <ol>
+     * <li>/jigyosyo/zip/jigyosyo.zip</li>
+     * <li>/jigyosyo/zip/jadd2303.zip</li>
+     * <li>/jigyosyo/zip/jdel2303.zip</li>
+     * </ol>
+     * @return
+     * @throws PostalCodeException
+     */
+    public List<PostalCodeCsv> getOfficeCodeList(String fileName) throws PostalCodeException {
+        return getPostalCode(baseOfficeUrl.replace("{target}", fileName));
+    }
+
+    /**
+     * ローマ字URLのダウンロード
+     * https://www.post.japanpost.jp/zipcode/dl/roman/ken_all_rome.zip
+     * @return
+     * @throws PostalCodeException
+     */
+    public List<PostalCodeCsv> getPostalCode4RomanList() throws PostalCodeException {
+        return getPostalCode(baseRomanUrl.replace("{target}", "ken_all_rome.zip"));
     }
 
     /**
