@@ -91,7 +91,9 @@ public class CallProcess {
         List<PostalCodeModel> list = postalCodeDbService.findByPrefectureName(prefectureName);
         List<PostalCodeModel> retList = list.stream().sorted((e1, e2) -> e1.getPostalCode().compareTo(e2.getPostalCode())).toList();
         List<CityTownVillageModel> cityTownVillageList = retList.stream().map(e -> CityTownVillageModel.convert(e)).distinct().toList();
-        return PrefectureDataModel.builder().cityTownVillageList(cityTownVillageList).prefectureName(prefectureName).build();
+        List<CityTownVillageModel> sortedList = cityTownVillageList.stream().sorted(
+                (e1, e2) -> e1.getLocalGovernmentCode().compareTo(e2.getLocalGovernmentCode())).toList();
+        return PrefectureDataModel.builder().cityTownVillageList(sortedList).prefectureName(prefectureName).build();
     }
 
     /**

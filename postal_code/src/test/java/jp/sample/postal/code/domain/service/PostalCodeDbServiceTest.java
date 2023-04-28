@@ -53,7 +53,7 @@ class PostalCodeDbServiceTest {
                 log.debug(String.format("merge pre  : %s >> %s", item.getStreetNameHwK(), item.getStreetName()));
             }
             long process2 = System.currentTimeMillis();
-            List<PostalCodeModel> test = postalCodeDbService.mergeList(list);
+            List<PostalCodeModel> test = postalCodeDbService.splitList(postalCodeDbService.mergeList(list));
             long end = System.currentTimeMillis();
             log.debug(String.format("csvList = %d", csvList.size()));
             log.debug(String.format("test = %d", test.size()));
@@ -67,7 +67,7 @@ class PostalCodeDbServiceTest {
             for (PostalCodeModel item : test2) {
                 assertEquals(expectedHwK, item.getStreetNameHwK());
                 assertEquals(expected, item.getStreetName());
-                log.debug(String.format("merge post : %s >> %s", item.getStreetNameHwK(), item.getStreetName()));
+                log.debug(String.format("merge post : \r\n%s\r\n >> \r\n%s", item.getStreetNameHwK(), item.getStreetName()));
             }
             log.debug(String.format("getPostalCodeAllList = %d - %d (%d)", start, process1, process1 - start));
             log.debug(String.format("convert = %d - %d (%d)", process1, process2, process2 - process1));

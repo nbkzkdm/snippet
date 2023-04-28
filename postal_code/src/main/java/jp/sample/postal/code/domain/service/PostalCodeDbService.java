@@ -10,15 +10,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Spliterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.sample.postal.code.common.Merge;
+import jp.sample.postal.code.common.Splitting;
 import jp.sample.postal.code.common.enums.InputType;
 import jp.sample.postal.code.domain.model.PostalCodeCsv;
 import jp.sample.postal.code.domain.model.PostalCodeMergeModel;
 import jp.sample.postal.code.domain.model.PostalCodeModel;
+import jp.sample.postal.code.domain.model.PostalCodeSplitModel;
 import jp.sample.postal.code.domain.repository.PostalCodeModelRepository;
 import lombok.extern.log4j.Log4j2;
 
@@ -60,7 +63,8 @@ public class PostalCodeDbService {
      * @return
      */
     public List<PostalCodeModel> mergeList(List<PostalCodeModel> entryList) {
-        List<Merge<PostalCodeModel>> targetList = entryList.stream().map(e -> new PostalCodeMergeModel().set(e)).toList();
+        List<Merge<PostalCodeModel>> targetList =
+                entryList.stream().map(e -> new PostalCodeMergeModel().set(e)).toList();
         Map<String, Merge<PostalCodeModel>> map = new HashMap<>();
         for (Merge<PostalCodeModel> merge : targetList) {
             Merge<PostalCodeModel> item = map.get(merge.key());
@@ -74,13 +78,23 @@ public class PostalCodeDbService {
         return map.values().stream().map(e -> e.value()).toList();
     }
 
+    public List<PostalCodeModel> splitList(List<PostalCodeModel> entryList) {
+        List<Splitting<PostalCodeModel>> targetList =
+                entryList.stream().map(e -> new PostalCodeSplitModel().set(e)).toList();
+        List<PostalCodeModel> retList = new ArrayList<>();
+        for (Splitting<PostalCodeModel> item : targetList) {
+            retList.addAll(item.splitValues());
+        }
+        return retList;
+    }
+
     /**
      * 郵便番号情報リスト登録
      * @param entryList
      * @return
      */
     public List<PostalCodeModel> createList(List<PostalCodeModel> entryList) {
-        return this.postalCodeModelRepository.saveAll(mergeList(entryList));
+        return this.postalCodeModelRepository.saveAll(splitList(mergeList(entryList)));
     }
 
     /**
@@ -99,7 +113,8 @@ public class PostalCodeDbService {
      * @return
      */
     public List<PostalCodeModel> postalCodeConvertAddList(List<PostalCodeCsv> csvList) {
-        List<PostalCodeModel> targetList = mergeList(csvList.stream().map(e -> PostalCodeModel.convert(e)).toList());
+        List<PostalCodeModel> targetList = splitList(mergeList(
+                csvList.stream().map(e -> PostalCodeModel.convert(e)).toList()));
         List<PostalCodeModel> list = new ArrayList<>();
         for (PostalCodeModel target : targetList) {
             String postalCode = target.getPostalCode();

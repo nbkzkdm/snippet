@@ -15,10 +15,11 @@ public class PostalCodeMergeModel implements Merge<PostalCodeModel> {
 
     @Override
     public String key() {
-        return String.format("%s-%s-%s",
-                this.value().getPostalId(),
-                this.value().getOldPostalCode(),
-                this.value().getPostalCode());
+        return String.format("%s-%s-%s_%s-%s-%s-%s-%s-%s",
+                this.value().getPostalId(), this.value().getOldPostalCode(), this.value().getPostalCode(),
+                this.value().getCombinedZipCodeType(), this.value().getDetailedStreetAddressingType(),
+                this.value().getAvenueAndStreetNumberingType(), this.value().getMultiAreaZipCodeType(),
+                this.value().getUpdateIndicationType(), this.value().getReasonForChangeType());
     }
 
     @Override
