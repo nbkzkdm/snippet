@@ -61,7 +61,7 @@ public class PostalCodeService {
      * @return
      * @throws PostalCodeException
      */
-    public List<PostalCodeCsv> getPostalCodeAllList() throws PostalCodeException {
+    protected List<PostalCodeCsv> getPostalCodeAllList() throws PostalCodeException {
         return getPostalCodeList(ZipcodeUrl.KEN_ALL.zipFileName());
     }
 
@@ -70,7 +70,7 @@ public class PostalCodeService {
      * @return
      * @throws PostalCodeException
      */
-    public List<PostalCodeCsv> getPostalCodeAddList() throws PostalCodeException {
+    protected List<PostalCodeCsv> getPostalCodeAddList() throws PostalCodeException {
         return getPostalCodeList(ZipcodeUrl.ADD_YYMM.zipFileName());
     }
 
@@ -79,7 +79,7 @@ public class PostalCodeService {
      * @return
      * @throws PostalCodeException
      */
-    public List<PostalCodeCsv> getPostalCodeDelList() throws PostalCodeException {
+    protected List<PostalCodeCsv> getPostalCodeDelList() throws PostalCodeException {
         return getPostalCodeList(ZipcodeUrl.DEL_YYMM.zipFileName());
     }
 
@@ -98,8 +98,8 @@ public class PostalCodeService {
      * @return
      * @throws PostalCodeException
      */
-    public List<PostalCodeCsv> getPostalCodeOfficeList() throws PostalCodeException {
-        return getPostalCode("jigyosyo.zip");
+    protected List<PostalCodeCsv> getPostalCodeOfficeList() throws PostalCodeException {
+        return getOfficeCodeList("jigyosyo.zip");
     }
 
     /**
@@ -108,7 +108,7 @@ public class PostalCodeService {
      * @return
      * @throws PostalCodeException
      */
-    public List<PostalCodeCsv> getPostalCodeOfficeAddList() throws PostalCodeException {
+    protected List<PostalCodeCsv> getPostalCodeOfficeAddList() throws PostalCodeException {
         LocalDate now = LocalDate.now().minusMonths(1);
         DateTimeFormatter yyMM = DateTimeFormatter.ofPattern("yyMM");
         return getOfficeCodeList(String.format("jadd%s.zip", now.format(yyMM)));
@@ -120,7 +120,7 @@ public class PostalCodeService {
      * @return
      * @throws PostalCodeException
      */
-    public List<PostalCodeCsv> getPostalCodeOfficeDelList() throws PostalCodeException {
+    protected List<PostalCodeCsv> getPostalCodeOfficeDelList() throws PostalCodeException {
         LocalDate now = LocalDate.now().minusMonths(1);
         DateTimeFormatter yyMM = DateTimeFormatter.ofPattern("yyMM");
         return getOfficeCodeList(String.format("jdel%s.zip", now.format(yyMM)));
@@ -147,7 +147,7 @@ public class PostalCodeService {
      * @return
      * @throws PostalCodeException
      */
-    public List<PostalCodeCsv> getPostalCode4RomanList() throws PostalCodeException {
+    protected List<PostalCodeCsv> getPostalCode4RomanList() throws PostalCodeException {
         return getPostalCode(baseRomanUrl.replace("{target}", "ken_all_rome.zip"));
     }
 
